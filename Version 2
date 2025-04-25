@@ -1,0 +1,53 @@
+Please create me the code for a single page website.
+The website would be a top down look of a sky map with floating islands and flying ships for the copmuter game Lost Skies.
+The background of the main page would be:  https://assetsio.gnwcdn.com/lost-skies_2nGY8CL.jpg  //Online Original Lost skies wallpaper
+The website will consist of two frames centered to the page. 
+
+The left frame being 800px wide by 800px long and consist the MAP portion of the page
+The Frame of this section would be a "Wind Wall" and is the broundries of the map 
+Design it so the frame looks like a cloud wall.
+The background of the Map portion needs to have far away small clouds moving and formeing over a light blue backdrop, it needs to move and form very slowly
+At the Bottom Left of the map have a vector image that shows compas direction similar to that of a pirate treasure map, it
+can use : https://media.istockphoto.com/id/503891738/vector/compass.jpg?s=612x612&w=0&k=20&c=ZW9GuAAwFCf9vf1MLlM9iSjeI0VC7UfxkBTBbn8v56g=
+
+The right side frame being 600px wide by 800 px long and consist of the Info portion of the page
+Inside the frame at the top of this section would be a Header Image : https://lostskiesgame.com/media/Logos/mobilelogo.png?
+Below that is a list of all the islands
+
+It would have the following header in a table: No , Island Name,  Ark,  DataBanks, Difficulty
+No, will be numbered 1 to 25 each on a new line
+Islands Names, should be a field that can be completed
+Ark should have a Unknows, yes, No, field that can be changed with a dropdown menu, by initially all islands should be Unknown.
+DataBanks should have a Dropdown menu from Unknown, 1, 2, 3, 4, 5, 6, 7 ,8 and initially should be set to Unknown.
+Difficulty should Rated from Easy, Moderate, Difficult, Very Hard and by default be set to Unknown. Easy have a font color of Green, Moderate have a font color of yellow, Difficult have a font color of orange, Very Hard have a font color of Red.
+Any changes should be saved to the local storage of the browser and when a user right clicks on the map and select "Export Changes" the added information should be added to the a data.jason file for 
+saving on the users computer. When the page loads up this data.jason should be checked for the data to insure previosuly saved info would display
+
+The Map section can have Islands on as Points of Intrest, these Islands would use a Icon : https://cdn.pixabay.com/photo/2024/12/30/10/33/floating-island-9299966_1280.png
+Initially the map would only have one island in the middle of the map, called Island 1, the island name should be underneath the icon, written in black on a wite background. This Island can not be moved. 
+When more Islands gets added they will look the same as Island 1, except they can be dragged by holding down the Ctrl key while dragging.
+
+The Map sectiom can also have Ships on, they are the same size as Islands and will by default be called Ship 1, then Ship 2 and so on. 
+The ship will use the icon: https://st4.depositphotos.com/16482308/24365/i/450/depositphotos_243654550-stock-photo-flying-fantastic-sailing-boat-powerful.jpg
+Ships can be dragged around on the map by holding left click and dragging, when a ship is dragged it will show a bloud trail animation as if they are flying.
+
+When right clicking on a blank place of the map the following options should appear:
+"Add a Island", this will create a new Island at the cursor location.
+"Add a Ship", this will create a new Ship at the cursors location.
+"Export Changes" the location of the Islands and Ships on the map, as well as the names of the ship and the Explored or not info should all be stored in the local storage of the browser and when "Export changes"
+is selected that info should be exported to a "Location.jason" file that can be saved in the root of the website folder.
+
+When Right clicking on a Island the following options should appear:
+"Mark as Explored", if this is selected change the font color of the Islands name to Green.
+"Mark as Un Explored", this should change the font color of the Islands name back to Black.
+"Delete This Island", this will bring up another prompt to "Are you sure you want to Delete this island", if Yes is selected, delte that island, if no is selected cancel the delete task.
+
+When Right Clicking on a Ship the following options should appear:
+"Rename Ship" this would give the option to rename the ship.
+"Delete Ship", this will bring up another prompt to "Are you sure you want to Delete this Ship", if Yes is selected, delte that Ship, if no is selected cancel the delete task.
+
+When the page loads the first time it would have only the 1 island on, after more islands and ships were added and the data.jason file was saved in the root folder of the website all the loacations should 
+exists in the .jason file, so always check on load if there is a .jason file in the root and then add the islands and ships from there, should the file not exsist then asume its the first time the page was loaded.
+
+
+
