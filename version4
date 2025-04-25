@@ -1,0 +1,32 @@
+Use "Island_Icon.png" for the Island Icons
+Use "Ship.png" for the ship Icons
+
+Use "background.jpg" for the main page background and use "wallpaper.jpg" for the map section background
+Use "Directions.png" for the compas directions icon and do not use a background color around it
+Make the Island and Ship icon 0.7 time the current size, use smaller font for the Ship and Island names
+When Islands are marked as Explored, change the Font color of the Island name on the map to Green, if the Island is maked as Unexplored change the font back to black
+In the Difficulty selection, change the Easy Island Font color to green, change the Moderate color to blue, change the Difficult color to orange and change the Hard color to Red
+Change the font size in the right hand side panel for Island Info to a smaller font
+When selecting Export Cahnges save the .Jason file default to the root folder of the website
+
+Remove the smoke trail feature when dragging a ship
+make space between the ship details at the right panel smaller to allow more lines to fot to the block
+In the Difficulty selection, change the font color for the "Easy" selection to green, change the Moderate color to blue, change the Difficult color to orange and change the Hard color to Red
+When an island is maked as explored, change the font color of that island name to Green
+When right clicking and "Deleting Island" remove the icon and name from the map and remove the line on the info section too
+When Renaming a Ship change the ship name below the ship icon to the new name
+
+Change the Moderate color to light blue
+The Difficulty drop down colors in the option menu should always be white, only once changed should the color change to red light blue green or orange
+Make sure the Island and ship name is always centered under the Island and ship icon
+Give the info section a scroll option once it reatches the bottom of the info panel 
+In the info panel, to the right of the header image add the wording " SKY MAP" the same size as the header image in white font
+When right clicking and "Deleting Island" remove the icon and name from the map and remove the line on the info section too imediatly 
+
+Let the Info section only scroll on the panel and not go over the block border.
+When right clicking on an island and selecting delete remove the island
+when right clicking on a ship and selected delete ship, remove the ship
+When marking an island as explored no not change the island font color to green anymore
+All Island text should only be black now
+When marking an island as explored add a green glow shadow around the island icon on the map
+When marking an island as not explored remove the green slow shadow around the island icon on the map
