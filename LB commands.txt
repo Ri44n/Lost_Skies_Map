@@ -1,0 +1,91 @@
+
+Please create me the code for a single page website.
+ The website would be a top down look of a sky map with floating islands and flying ships for the copmuter game Lost Skies.
+ The background of the main page would be:  "background.jpg"
+ The website will consist of two frames centered to the page. 
+ 
+ The left frame being 800px wide by 800px long and consist the MAP portion of the page
+ The Frame of this section would be a "Wind Wall" and is the broundries of the map 
+ Design it so the frame looks like a dark cloud wall.
+ The background of the Map use "wallpaper.jpg" as background
+ At the Bottom Left of the map have a image used to show directions, Use "Directions.png" for the compas directions icon and do not use a background color around it
+ 
+ The right side frame being 600px wide by 800 px long and consist of the Info portion of the page
+ Inside the frame at the top of this section would be a Header Image : https://lostskiesgame.com/media/Logos/mobilelogo.png? next to it at the same size type "SKY MAP" in a modern fort written in white
+ Below that is a list of all the islands
+ 
+ It would have the following header in a table: No , Island Name,  Ark,  DataBanks, Difficulty
+ No, will be numbered 1 to 25 each on a new line
+ Islands Names, should be a field that can be completed
+ Ark should have a Unknows, yes, No, field that can be changed with a dropdown menu, by initially all islands should be Unknown.
+ DataBanks should have a Dropdown menu from Unknown, 1, 2, 3, 4, 5, 6, 7 ,8 and initially should be set to Unknown.
+ Difficulty should Rated from Easy, Moderate, Difficult, Very Hard and by default be set to Unknown. 
+ If Easy is selected the Field would show Easy in a font color of Green, Moderate have a font color of light blue, Difficult have a font color of orange, Very Hard have a font color of Red.
+ The Difficulty drop down colors in the option menu should always be white, only once changed should the color change to red light blue green or orange
+ 
+ 
+ Any changes should be saved to the local storage of the browser and when a user right clicks on the map and select "Export Changes" the added information should be added to the a data.jason file for 
+ saving on the users computer. When the page loads up this data.jason should be checked for the data to insure previosuly saved info would display
+ 
+ The Map section can have Islands on as Points of Intrest, these Islands would use a Icon : https://cdn.pixabay.com/photo/2024/12/30/10/33/floating-island-9299966_1280.png
+ Initially the map would only have one island in the middle of the map, called Island 1, the island name should be underneath the icon, written in black on a wite background. This Island can not be moved. 
+ When more Islands gets added they will look the same as Island 1, except they can be dragged by holding down the Ctrl key while dragging.
+ 
+ The Map sectiom can also have Ships on, they are the same size as Islands and will by default be called Ship 1, then Ship 2 and so on. 
+ The ship will use the icon: https://st4.depositphotos.com/16482308/24365/i/450/depositphotos_243654550-stock-photo-flying-fantastic-sailing-boat-powerful.jpg
+ Ships can be dragged around on the map by holding left click and dragging, when a ship is dragged it will show a bloud trail animation as if they are flying.
+ 
+ When right clicking on a blank place of the map the following options should appear:
+ "Add a Island", this will create a new Island at the cursor location.
+ "Add a Ship", this will create a new Ship at the cursors location.
+ "Export Changes" the location of the Islands and Ships on the map, as well as the names of the ship and the Explored or not info should all be stored in the local storage of the browser and when "Export changes"
+ is selected that info should be exported to a "Location.jason" file that can be saved in the root of the website folder.
+ 
+ When Right clicking on a Island the following options should appear:
+ "Mark as Explored", if this is selected change the font color of the Islands name to Green.
+ "Mark as Un Explored", this should change the font color of the Islands name back to Black.
+ "Delete This Island", this will bring up another prompt to "Are you sure you want to Delete this island", if Yes is selected, delte that island, if no is selected cancel the delete task.
+ 
+ When Right Clicking on a Ship the following options should appear:
+ "Rename Ship" this would give the option to rename the ship.
+ "Delete Ship", this will bring up another prompt to "Are you sure you want to Delete this Ship", if Yes is selected, delte that Ship, and remove from the map, if no is selected cancel the delete task.
+ 
+ When the page loads the first time it would have only the 1 island on, after more islands and ships were added and the data.jason file was saved in the root folder of the website all the loacations should 
+ exists in the .jason file, so always check on load if there is a .jason file in the root and then add the islands and ships from there, should the file not exsist then asume its the first time the page was loaded
+
+
+
+
+
+Use "Island_Icon.png" for the Island Icons
+Use "Ship.png" for the ship Icons
+
+Use "background.jpg" for the main page background and use "wallpaper.jpg" for the map section background
+Use "Directions.png" for the compas directions icon and do not use a background color around it
+Make the Island and Ship icon 0.7 time the current size, use smaller font for the Ship and Island names
+When Islands are marked as Explored, change the Font color of the Island name on the map to Green, if the Island is maked as Unexplored change the font back to black
+In the Difficulty selection, change the Easy Island Font color to green, change the Moderate color to blue, change the Difficult color to orange and change the Hard color to Red
+Change the font size in the right hand side panel for Island Info to a smaller font
+When selecting Export Cahnges save the .Jason file default to the root folder of the website
+
+Remove the smoke trail feature when dragging a ship
+make space between the ship details at the right panel smaller to allow more lines to fot to the block
+In the Difficulty selection, change the font color for the "Easy" selection to green, change the Moderate color to blue, change the Difficult color to orange and change the Hard color to Red
+When an island is maked as explored, change the font color of that island name to Green
+When right clicking and "Deleting Island" remove the icon and name from the map and remove the line on the info section too
+When Renaming a Ship change the ship name below the ship icon to the new name
+
+Change the Moderate color to light blue
+The Difficulty drop down colors in the option menu should always be white, only once changed should the color change to red light blue green or orange
+Make sure the Island and ship name is always centered under the Island and ship icon
+Give the info section a scroll option once it reatches the bottom of the info panel 
+In the info panel, to the right of the header image add the wording " SKY MAP" the same size as the header image in white font
+When right clicking and "Deleting Island" remove the icon and name from the map and remove the line on the info section too imediatly 
+
+Let the Info section only scroll on the panel and not go over the block border.
+When right clicking on an island and selecting delete remove the island
+when right clicking on a ship and selected delete ship, remove the ship
+When marking an island as explored no not change the island font color to green anymore
+All Island text should only be black now
+When marking an island as explored add a green glow shadow around the island icon on the map
+When marking an island as not explored remove the green slow shadow around the island icon on the map
