@@ -1,0 +1,47 @@
+{
+  "islands": [
+    {
+      "id": 1,
+      "name": "Island 1",
+      "x": 350,
+      "y": 350
+    },
+    {
+      "id": 2,
+      "name": "Island 2",
+      "x": 228,
+      "y": 260
+    },
+    {
+      "id": 3,
+      "name": "Island 3",
+      "x": 479,
+      "y": 466
+    }
+  ],
+  "ships": [
+    {
+      "id": 1,
+      "name": "Eagle 2",
+      "x": 462,
+      "y": 276
+    }
+  ],
+  "islandInfo": {
+    "1": {
+      "ark": "Unknown",
+      "databanks": "Unknown",
+      "difficulty": "Unknown"
+    },
+    "2": {
+      "ark": "Unknown",
+      "databanks": "Unknown",
+      "difficulty": "Unknown"
+    },
+    "3": {
+      "ark": "Unknown",
+      "databanks": "Unknown",
+      "difficulty": "Unknown"
+    }
+  }
+}

@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Skies - Sky Map</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes cloudMovement {
+            0% { background-position: 0 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        .cloud-wall {
+            background-image: url('https://www.transparenttextures.com/patterns/cloudy.png');
+            background-size: 200px;
+            border-radius: 15px;
+            box-shadow: 
+                inset 0 0 30px rgba(255, 255, 255, 0.7),
+                0 0 30px rgba(255, 255, 255, 0.5);
+        }
+        
+        .map-background {
+            background-image: url('wallpaper.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .island {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+        
+        .island-name {
+            background-color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 10px;
+            text-align: center;
+            margin-top: 2px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            color: black !important;
+        }
+        
+        .ship {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+        
+        .context-menu {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            min-width: 150px;
+        }
+        
+        .context-menu-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .context-menu-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .easy { color: green !important; }
+        .moderate { color: #7cb9e8 !important; } /* Light blue */
+        .difficult { color: orange !important; }
+        .very-hard { color: red !important; }
+        
+        body {
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .info-panel {
+            font-size: 11px;
+        }
+        
+        .info-panel th, .info-panel td {
+            padding: 2px 4px;
+        }
+        
+        .info-panel input, .info-panel select {
+            font-size: 11px;
+            padding: 1px 2px;
+        }
+        
+        .island-icon {
+            width: 30px !important;
+            height: 30px !important;
+            display: block;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+        
+        .island-explored {
+            filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.7));
+        }
+        
+        .ship-icon {
+            width: 30px !important;
+            height: 30px !important;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 1rem;
+        }
+        
+        .sky-map-title {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        
+        .scrollable-table-container {
+            height: 730px;
+            overflow: hidden;
+            border-radius: 0.375rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .scrollable-table {
+            overflow-y: auto;
+            height: 100%;
+        }
+        
+        .scrollable-table::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .scrollable-table::-webkit-scrollbar-track {
+            background: #4a5568;
+            border-radius: 4px;
+        }
+        
+        .scrollable-table::-webkit-scrollbar-thumb {
+            background: #718096;
+            border-radius: 4px;
+        }
+        
+        .scrollable-table::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+        
+        select option {
+            color: white !important;
+            background-color: #2d3748;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="flex gap-6">
+        <!-- Left Frame - Map Section -->
+        <div class="cloud-wall p-4 relative" style="width: 800px; height: 800px;">
+            <div class="map-background w-full h-full rounded-lg relative overflow-hidden" id="map-container">
+                <!-- Islands and ships will be added here dynamically -->
+            </div>
+            
+            <!-- Compass -->
+            <div class="absolute bottom-4 left-4 p-2">
+                <img src="Directions.png" alt="Compass" class="w-16 h-16">
+            </div>
+        </div>
+        
+        <!-- Right Frame - Info Section -->
+        <div class="bg-gray-800 bg-opacity-80 p-4 rounded-lg border border-gray-700 info-panel" style="width: 600px; height: 800px;">
+            <!-- Header Image -->
+            <div class="header-container">
+                <img src="https://lostskiesgame.com/media/Logos/mobilelogo.png" alt="Lost Skies Logo" class="h-16">
+                <div class="sky-map-title">SKY MAP</div>
+            </div>
+            
+            <!-- Islands Table -->
+            <div class="scrollable-table-container">
+                <div class="scrollable-table">
+                    <table class="w-full text-white">
+                        <thead class="bg-gray-700 sticky top-0">
+                            <tr>
+                                <th class="p-1 text-left">No</th>
+                                <th class="p-1 text-left">Island Name</th>
+                                <th class="p-1 text-left">Ark</th>
+                                <th class="p-1 text-left">DataBanks</th>
+                                <th class="p-1 text-left">Difficulty</th>
+                            </tr>
+                        </thead>
+                        <tbody id="islands-table">
+                            <!-- Islands will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load data from localStorage or initialize
+            let mapData = JSON.parse(localStorage.getItem('lostSkiesMapData')) || {
+                islands: [
+                    { id: 1, name: "Island 1", x: 350, y: 350, explored: false }
+                ],
+                ships: [],
+                islandInfo: {}
+            };
+            
+            // Initialize island info if not present
+            if (!mapData.islandInfo[1]) {
+                mapData.islandInfo[1] = {
+                    ark: "Unknown",
+                    databanks: "Unknown",
+                    difficulty: "Unknown"
+                };
+            }
+            
+            const mapContainer = document.getElementById('map-container');
+            const islandsTable = document.getElementById('islands-table');
+            let activeElement = null;
+            let isDragging = false;
+            let startX, startY;
+            let isCtrlPressed = false;
+            let contextMenu = null;
+            
+            // Load initial data
+            loadMapData();
+            updateIslandsTable();
+            
+            // Event listeners for keyboard
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Control') {
+                    isCtrlPressed = true;
+                }
+            });
+            
+            document.addEventListener('keyup', function(e) {
+                if (e.key === 'Control') {
+                    isCtrlPressed = false;
+                }
+            });
+            
+            // Right click context menu for map
+            mapContainer.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                closeContextMenu();
+                
+                // Check if we clicked on an island or ship
+                const element = e.target.closest('.island, .ship');
+                if (element) {
+                    activeElement = element;
+                    
+                    if (element.classList.contains('island')) {
+                        showIslandContextMenu(e.clientX, e.clientY);
+                    } else if (element.classList.contains('ship')) {
+                        showShipContextMenu(e.clientX, e.clientY);
+                    }
+                } else {
+                    // Show map context menu
+                    showMapContextMenu(e.clientX, e.clientY, e.offsetX, e.offsetY);
+                }
+            });
+            
+            // Left click to close context menu
+            document.addEventListener('click', function() {
+                closeContextMenu();
+            });
+            
+            // Drag functionality for islands and ships
+            mapContainer.addEventListener('mousedown', function(e) {
+                if (e.button !== 0) return; // Only left click
+                
+                const element = e.target.closest('.island, .ship');
+                if (!element) return;
+                
+                // For islands, only drag if Ctrl is pressed
+                if (element.classList.contains('island') && !isCtrlPressed) return;
+                
+                activeElement = element;
+                isDragging = true;
+                startX = e.clientX - element.offsetLeft;
+                startY = e.clientY - element.offsetTop;
+                
+                element.style.zIndex = '100';
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging || !activeElement) return;
+                
+                const x = e.clientX - startX;
+                const y = e.clientY - startY;
+                
+                activeElement.style.left = x + 'px';
+                activeElement.style.top = y + 'px';
+            });
+            
+            document.addEventListener('mouseup', function() {
+                if (isDragging && activeElement) {
+                    // Update position in mapData
+                    const id = parseInt(activeElement.getAttribute('data-id'));
+                    const type = activeElement.classList.contains('island') ? 'islands' : 'ships';
+                    
+                    const elementData = mapData[type].find(item => item.id === id);
+                    if (elementData) {
+                        elementData.x = parseInt(activeElement.style.left);
+                        elementData.y = parseInt(activeElement.style.top);
+                        saveMapData();
+                    }
+                    
+                    activeElement.style.zIndex = '10';
+                }
+                
+                isDragging = false;
+                activeElement = null;
+            });
+            
+            function loadMapData() {
+                // Clear existing elements
+                mapContainer.innerHTML = '';
+                
+                // Add islands
+                mapData.islands.forEach(island => {
+                    addIslandToMap(island.id, island.name, island.x, island.y, island.explored);
+                });
+                
+                // Add ships
+                mapData.ships.forEach(ship => {
+                    addShipToMap(ship.id, ship.name, ship.x, ship.y);
+                });
+            }
+            
+            function addIslandToMap(id, name, x, y, explored = false) {
+                const island = document.createElement('div');
+                island.className = 'island';
+                island.setAttribute('data-id', id);
+                island.style.left = x + 'px';
+                island.style.top = y + 'px';
+                
+                const iconClass = explored ? 'island-icon island-explored' : 'island-icon';
+                
+                island.innerHTML = `
+                    <img src="Island_Icon.png" alt="Island" class="${iconClass}">
+                    <div class="island-name">${name}</div>
+                `;
+                
+                mapContainer.appendChild(island);
+            }
+            
+            function addShipToMap(id, name, x, y) {
+                const ship = document.createElement('div');
+                ship.className = 'ship';
+                ship.setAttribute('data-id', id);
+                ship.style.left = x + 'px';
+                ship.style.top = y + 'px';
+                
+                ship.innerHTML = `
+                    <img src="Ship.png" alt="Ship" class="ship-icon">
+                    <div class="island-name">${name}</div>
+                `;
+                
+                mapContainer.appendChild(ship);
+            }
+            
+            function updateIslandsTable() {
+                islandsTable.innerHTML = '';
+                
+                mapData.islands.forEach(island => {
+                    const info = mapData.islandInfo[island.id] || {
+                        ark: "Unknown",
+                        databanks: "Unknown",
+                        difficulty: "Unknown"
+                    };
+                    
+                    const row = document.createElement('tr');
+                    row.className = 'border-b border-gray-700 hover:bg-gray-700';
+                    row.setAttribute('data-island-id', island.id);
+                    row.innerHTML = `
+                        <td class="p-1">${island.id}</td>
+                        <td class="p-1">
+                            <input type="text" value="${island.name}" class="bg-gray-800 border-b border-gray-600 w-full text-white"
+                                   data-id="${island.id}" data-field="name">
+                        </td>
+                        <td class="p-1">
+                            <select class="bg-gray-800 border border-gray-600 rounded text-white" 
+                                    data-id="${island.id}" data-field="ark">
+                                <option value="Unknown" ${info.ark === "Unknown" ? "selected" : ""}>Unknown</option>
+                                <option value="Yes" ${info.ark === "Yes" ? "selected" : ""}>Yes</option>
+                                <option value="No" ${info.ark === "No" ? "selected" : ""}>No</option>
+                            </select>
+                        </td>
+                        <td class="p-1">
+                            <select class="bg-gray-800 border border-gray-600 rounded text-white" 
+                                    data-id="${island.id}" data-field="databanks">
+                                <option value="Unknown" ${info.databanks === "Unknown" ? "selected" : ""}>Unknown</option>
+                                <option value="1" ${info.databanks === "1" ? "selected" : ""}>1</option>
+                                <option value="2" ${info.databanks === "2" ? "selected" : ""}>2</option>
+                                <option value="3" ${info.databanks === "3" ? "selected" : ""}>3</option>
+                                <option value="4" ${info.databanks === "4" ? "selected" : ""}>4</option>
+                                <option value="5" ${info.databanks === "5" ? "selected" : ""}>5</option>
+                                <option value="6" ${info.databanks === "6" ? "selected" : ""}>6</option>
+                                <option value="7" ${info.databanks === "7" ? "selected" : ""}>7</option>
+                                <option value="8" ${info.databanks === "8" ? "selected" : ""}>8</option>
+                            </select>
+                        </td>
+                        <td class="p-1">
+                            <select class="bg-gray-800 border border-gray-600 rounded ${getDifficultyClass(info.difficulty)}" 
+                                    data-id="${island.id}" data-field="difficulty">
+                                <option value="Unknown" class="text-white">Unknown</option>
+                                <option value="Easy" class="text-white">Easy</option>
+                                <option value="Moderate" class="text-white">Moderate</option>
+                                <option value="Difficult" class="text-white">Difficult</option>
+                                <option value="Very Hard" class="text-white">Very Hard</option>
+                            </select>
+                        </td>
+                    `;
+                    
+                    // Set the selected option
+                    const difficultySelect = row.querySelector('select[data-field="difficulty"]');
+                    if (difficultySelect) {
+                        difficultySelect.value = info.difficulty;
+                        difficultySelect.className = `bg-gray-800 border border-gray-600 rounded ${getDifficultyClass(info.difficulty)}`;
+                    }
+                    
+                    islandsTable.appendChild(row);
+                });
+                
+                // Add event listeners for table inputs
+                document.querySelectorAll('#islands-table input, #islands-table select').forEach(input => {
+                    input.addEventListener('change', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        const field = this.getAttribute('data-field');
+                        const value = this.value;
+                        
+                        if (field === 'name') {
+                            // Update island name in mapData
+                            const island = mapData.islands.find(i => i.id === id);
+                            if (island) island.name = value;
+                            
+                            // Update name on map
+                            const nameElement = document.querySelector(`.island[data-id="${id}"] .island-name`);
+                            if (nameElement) nameElement.textContent = value;
+                        } else {
+                            // Update island info
+                            if (!mapData.islandInfo[id]) {
+                                mapData.islandInfo[id] = {};
+                            }
+                            mapData.islandInfo[id][field] = value;
+                            
+                            // Update difficulty class if needed
+                            if (field === 'difficulty') {
+                                const select = this;
+                                select.className = `bg-gray-800 border border-gray-600 rounded ${getDifficultyClass(value)}`;
+                            }
+                        }
+                        
+                        saveMapData();
+                    });
+                });
+            }
+            
+            function getDifficultyClass(difficulty) {
+                switch(difficulty) {
+                    case 'Easy': return 'easy';
+                    case 'Moderate': return 'moderate';
+                    case 'Difficult': return 'difficult';
+                    case 'Very Hard': return 'very-hard';
+                    default: return '';
+                }
+            }
+            
+            function showMapContextMenu(x, y, offsetX, offsetY) {
+                closeContextMenu();
+                
+                contextMenu = document.createElement('div');
+                contextMenu.className = 'context-menu';
+                contextMenu.style.left = x + 'px';
+                contextMenu.style.top = y + 'px';
+                
+                const addIslandOption = document.createElement('div');
+                addIslandOption.className = 'context-menu-item';
+                addIslandOption.textContent = 'Add an Island';
+                addIslandOption.addEventListener('click', function() {
+                    const newId = mapData.islands.length > 0 ? Math.max(...mapData.islands.map(i => i.id)) + 1 : 1;
+                    const newIsland = {
+                        id: newId,
+                        name: `Island ${newId}`,
+                        x: offsetX,
+                        y: offsetY,
+                        explored: false
+                    };
+                    
+                    mapData.islands.push(newIsland);
+                    mapData.islandInfo[newId] = {
+                        ark: "Unknown",
+                        databanks: "Unknown",
+                        difficulty: "Unknown"
+                    };
+                    
+                    addIslandToMap(newId, newIsland.name, newIsland.x, newIsland.y, newIsland.explored);
+                    updateIslandsTable();
+                    saveMapData();
+                });
+                
+                const addShipOption = document.createElement('div');
+                addShipOption.className = 'context-menu-item';
+                addShipOption.textContent = 'Add a Ship';
+                addShipOption.addEventListener('click', function() {
+                    const newId = mapData.ships.length > 0 ? Math.max(...mapData.ships.map(s => s.id)) + 1 : 1;
+                    const newShip = {
+                        id: newId,
+                        name: `Ship ${newId}`,
+                        x: offsetX,
+                        y: offsetY
+                    };
+                    
+                    mapData.ships.push(newShip);
+                    addShipToMap(newId, newShip.name, newShip.x, newShip.y);
+                    saveMapData();
+                });
+                
+                const exportOption = document.createElement('div');
+                exportOption.className = 'context-menu-item';
+                exportOption.textContent = 'Export Changes';
+                exportOption.addEventListener('click', function() {
+                    exportMapData();
+                });
+                
+                contextMenu.appendChild(addIslandOption);
+                contextMenu.appendChild(addShipOption);
+                contextMenu.appendChild(exportOption);
+                
+                document.body.appendChild(contextMenu);
+            }
+            
+            function showIslandContextMenu(x, y) {
+                closeContextMenu();
+                
+                const id = parseInt(activeElement.getAttribute('data-id'));
+                const island = mapData.islands.find(i => i.id === id);
+                if (!island) return;
+                
+                contextMenu = document.createElement('div');
+                contextMenu.className = 'context-menu';
+                contextMenu.style.left = x + 'px';
+                contextMenu.style.top = y + 'px';
+                
+                if (!island.explored) {
+                    const markExploredOption = document.createElement('div');
+                    markExploredOption.className = 'context-menu-item';
+                    markExploredOption.textContent = 'Mark as Explored';
+                    markExploredOption.addEventListener('click', function() {
+                        island.explored = true;
+                        const iconElement = activeElement.querySelector('.island-icon');
+                        if (iconElement) {
+                            iconElement.classList.add('island-explored');
+                        }
+                        saveMapData();
+                    });
+                    contextMenu.appendChild(markExploredOption);
+                } else {
+                    const markUnexploredOption = document.createElement('div');
+                    markUnexploredOption.className = 'context-menu-item';
+                    markUnexploredOption.textContent = 'Mark as Unexplored';
+                    markUnexploredOption.addEventListener('click', function() {
+                        island.explored = false;
+                        const iconElement = activeElement.querySelector('.island-icon');
+                        if (iconElement) {
+                            iconElement.classList.remove('island-explored');
+                        }
+                        saveMapData();
+                    });
+                    contextMenu.appendChild(markUnexploredOption);
+                }
+                
+                const deleteOption = document.createElement('div');
+                deleteOption.className = 'context-menu-item';
+                deleteOption.textContent = 'Delete This Island';
+                deleteOption.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to delete this island?')) {
+                        // Remove from map
+                        activeElement.remove();
+                        
+                        // Remove from data
+                        mapData.islands = mapData.islands.filter(i => i.id !== id);
+                        delete mapData.islandInfo[id];
+                        
+                        // Remove from table
+                        const row = document.querySelector(`tr[data-island-id="${id}"]`);
+                        if (row) row.remove();
+                        
+                        saveMapData();
+                    }
+                });
+                
+                contextMenu.appendChild(deleteOption);
+                document.body.appendChild(contextMenu);
+            }
+            
+            function showShipContextMenu(x, y) {
+                closeContextMenu();
+                
+                const id = parseInt(activeElement.getAttribute('data-id'));
+                const ship = mapData.ships.find(s => s.id === id);
+                if (!ship) return;
+                
+                contextMenu = document.createElement('div');
+                contextMenu.className = 'context-menu';
+                contextMenu.style.left = x + 'px';
+                contextMenu.style.top = y + 'px';
+                
+                const renameOption = document.createElement('div');
+                renameOption.className = 'context-menu-item';
+                renameOption.textContent = 'Rename Ship';
+                renameOption.addEventListener('click', function() {
+                    const newName = prompt('Enter new ship name:', ship.name);
+                    if (newName && newName.trim() !== '') {
+                        ship.name = newName.trim();
+                        const nameElement = activeElement.querySelector('.island-name');
+                        if (nameElement) {
+                            nameElement.textContent = ship.name;
+                        }
+                        saveMapData();
+                    }
+                });
+                
+                const deleteOption = document.createElement('div');
+                deleteOption.className = 'context-menu-item';
+                deleteOption.textContent = 'Delete Ship';
+                deleteOption.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to delete this ship?')) {
+                        // Remove from map
+                        activeElement.remove();
+                        
+                        // Remove from data
+                        mapData.ships = mapData.ships.filter(s => s.id !== id);
+                        
+                        saveMapData();
+                    }
+                });
+                
+                contextMenu.appendChild(renameOption);
+                contextMenu.appendChild(deleteOption);
+                document.body.appendChild(contextMenu);
+            }
+            
+            function closeContextMenu() {
+                if (contextMenu) {
+                    contextMenu.remove();
+                    contextMenu = null;
+                }
+            }
+            
+            function saveMapData() {
+                localStorage.setItem('lostSkiesMapData', JSON.stringify(mapData));
+            }
+            
+            function exportMapData() {
+                const dataStr = JSON.stringify(mapData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = 'lost-skies-map-data.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+            }
+        });
+    </script>
+</body>
+</html>
